@@ -1,0 +1,14 @@
+{
+    "server":{
+        "name":"Valheim"
+    },
+    "stop":{
+        "message":"Java_zombie_core_znet_SteamUtils_n_1Shutdown",
+        "notifyDiscord":true
+    },
+    "start":{
+        "path":"D:\\Program Files\\Steam\\steamapps\\common\\Valheim dedicated server\\start_headless_server.bat",
+        "message":"Game server connected",
+        "notifyDiscord":true
+    }
+}
