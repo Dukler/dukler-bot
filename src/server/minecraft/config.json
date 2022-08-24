@@ -1,0 +1,21 @@
+{
+    "debug":false,
+    "server":{
+        "name":"Minecraft"
+    },
+    "stop":{
+        "cmd":"stop",
+        "message":"Press any key to continue . . .",
+        "notifyDiscord":true
+    },
+    "start":{
+        "path":"F:\\Workspace\\Javascript\\minecraft\\hard\\startbat.bat",
+        "message":"Done (",
+        "notifyDiscord":true
+    },
+    "autoShutdown":{
+        "timer":5,
+        "join":"joined the game",
+        "left":"left the game"
+    }
+}
