@@ -1,12 +1,14 @@
+const { readdirSync } = require('fs');
+
 
 async function getGameServer(command) {
     const { game, params, message } = command;
-    const server = await (await import(`./${game}/index.js`)).default
+    const server = await (await import(`../games/${game}/index.js`)).default
     return server
 }
 
 function newGameServer(config) {
-    const SM = require('./manager/ServerManager');
+    const SM = require('./ServerManager');
     const serverManager = new SM(config);
     const stopTimer = config.autoShutdown.timer;
 
@@ -21,7 +23,6 @@ function newGameServer(config) {
                         console.log('El servidor se apagara en:', stopTimer - counter + ' minutos \n\r');
                         counter++;
                     }
-                    // 60000
                     checkingPlayers = setTimeout(checkPlayers, 60000);
                 } else {
                     console.log('El servidor se apago');
@@ -31,35 +32,45 @@ function newGameServer(config) {
         })();
     }
 
-    const start = (params, channel) => {
-        channel.send('Server starting... ');
+    const start = (params, interaction) => {
+        if(serverManager.serverRunning) {
+            interaction.reply({content:`${config.server.name} server already running!` , ephemeral: true })
+            return;
+        }
+        const {restarting} = params;
+        const send = !interaction.deferred ? 'reply' : 'followUp'
+        if (!restarting) interaction[send]({content:'Server starting... ' , ephemeral: true });
         // serverManager.setup(config, channel);
         serverManager.start(
             ()=>{
                 if (config.start.notifyDiscord) {
-                    channel.send(`${config.server.name} server has started!`);
+                    // channel.send(`${config.server.name} server has started!`);
+                    interaction.followUp({content:`${config.server.name} server has started!`, ephemeral: true });
                 }
                 if (config.autoShutdown) autoShutdown()
-            },
-            ()=>{
-                if (config.stop.notifyDiscord) {
-                    channel.send(`${config.server.name} server has stopped!`);
-                }
-            },
+            }
         );
     }
-    const stop = (params, channel) => {
+    const stop = (params, interaction) => {
+        const {restarting} = params;
+        serverManager.stop(()=>{
+            if (config.stop.notifyDiscord) {
+                const send = !interaction.deferred ? 'reply' : 'followUp'
+                if (!restarting) interaction[send]({content:`${config.server.name} server has stopped!`,ephemeral:true});
+            }
+        });
         serverManager.write(config.stop.cmd);
     }
 
-    const restart = (params, channel) => {
-        stop(params, channel)
+    const restart = (params={}, interaction) => {
+        stop({...params, restarting:true}, interaction)
+        interaction.reply({content:`${config.server.name} server restarting...`,ephemeral:true })
         function checkFlag() {
             if (serverManager.serverRunning === true) {
                 setTimeout(checkFlag, 100);
             } else {
                 /* do something*/
-                start(params, channel)
+                start({...params, restarting:true}, interaction)
             }
         }
         checkFlag();
@@ -67,10 +78,22 @@ function newGameServer(config) {
 
     return { start, stop, restart }
 }
+  
+const getCurrentGames = ()=>{
+    const source = __dirname + '/../games'
+    return readdirSync(source, { withFileTypes: true })
+        .filter(dirent => {
+            const config = require(`${source}/${dirent.name}/config.json`)
+            return dirent.isDirectory() && !config.server.disabled
+        })
+        .map(dirent => {return {name: dirent.name, value: dirent.name}})
+}
+
 
 module.exports = {
     newGameServer,
     getGameServer,
+    getCurrentGames
 }
 // module.exports = {
 //     newGameServer,

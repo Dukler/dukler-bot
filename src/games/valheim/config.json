@@ -1,6 +1,7 @@
 {
     "server":{
-        "name":"Valheim"
+        "name":"Valheim",
+        "disabled":true
     },
     "stop":{
         "message":"Java_zombie_core_znet_SteamUtils_n_1Shutdown",

@@ -1,6 +1,6 @@
 
 
-const { newGameServer } = require('..');
+const { newGameServer } = require('../../server');
 const config = require('./config.json');
 
 

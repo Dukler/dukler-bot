@@ -1,0 +1,22 @@
+{
+    "debug":true,
+    "server":{
+        "name": "Minecraft",
+        "remote": "raspi"
+    },
+    "stop":{
+        "cmd":"stop",
+        "message":"Press any key to continue . . .",
+        "notifyDiscord":true
+    },
+    "start":{
+        "path":"/home/dukler/minecraft",
+        "message":"Done (",
+        "notifyDiscord":true
+    },
+    "autoShutdown":{
+        "timer":5,
+        "join":"joined the game",
+        "left":"left the game"
+    }
+}
