@@ -41,16 +41,8 @@ client.on('error', console.error);
 client.on('interactionCreate', interaction => {
     // console.log(interaction)
     if (!interaction.isChatInputCommand()) return;
-    const message = interaction;
-    if (message.member) {
-        const command = bot.getCommandByDiscordMessage(message);
-        if(command)bot.executeCommand(command);
-        // if (message.member.roles.cache.find(r => r.name === "bot user")) {
-        //     const command = bot.getCommandByDiscordMessage(message);
-        //     if(command)bot.executeCommand(command);
-        // }
-
-    }
+    const command = bot.getCommandByDiscordMessage(interaction);
+    if(command)bot.executeCommand(command);
 });
 
 

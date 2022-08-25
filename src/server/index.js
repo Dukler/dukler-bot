@@ -26,37 +26,40 @@ function newGameServer(config) {
                     checkingPlayers = setTimeout(checkPlayers, 60000);
                 } else {
                     console.log('El servidor se apago');
-                    stop();
+                    stop({isAutoShutdown:true});
                 }
             }
         })();
     }
 
-    const start = (params, interaction) => {
+    const start = (params = {}, interaction) => {
         if(serverManager.serverRunning) {
             interaction.reply({content:`${config.server.name} server already running!` , ephemeral: true })
             return;
         }
         const {restarting} = params;
         const send = !interaction.deferred ? 'reply' : 'followUp'
-        if (!restarting) interaction[send]({content:'Server starting... ' , ephemeral: true });
-        // serverManager.setup(config, channel);
         serverManager.start(
+            ()=>{
+                if (config.start.notifyDiscord && !restarting) {
+                    interaction[send]({content:'Server starting... ' , ephemeral: true });
+                }
+            },
             ()=>{
                 if (config.start.notifyDiscord) {
                     // channel.send(`${config.server.name} server has started!`);
-                    interaction.followUp({content:`${config.server.name} server has started!`, ephemeral: true });
+                    interaction[send]({content:`${config.server.name} server has started!`, ephemeral: true });
                 }
                 if (config.autoShutdown) autoShutdown()
             }
         );
     }
-    const stop = (params, interaction) => {
-        const {restarting} = params;
+    const stop = (params = {}, interaction) => {
+        const {restarting, isAutoShutdown} = params;
         serverManager.stop(()=>{
-            if (config.stop.notifyDiscord) {
+            if (config.stop.notifyDiscord && !isAutoShutdown && !restarting) {
                 const send = !interaction.deferred ? 'reply' : 'followUp'
-                if (!restarting) interaction[send]({content:`${config.server.name} server has stopped!`,ephemeral:true});
+                interaction[send]({content:`${config.server.name} server has stopped!`,ephemeral:true});
             }
         });
         serverManager.write(config.stop.cmd);
@@ -76,7 +79,16 @@ function newGameServer(config) {
         checkFlag();
     }
 
-    return { start, stop, restart }
+    const write = (params={},interaction) =>{
+        if (interaction.member.roles.cache.find(r => r.name === "Game server admin")){
+            serverManager.write(params)
+            interaction.reply({content:"Command sent.",ephemeral:true})
+        }else{
+            interaction.reply({content:"You do not have permissions.",ephemeral:true})
+        }
+    }
+
+    return { start, stop, restart, write }
 }
   
 const getCurrentGames = ()=>{

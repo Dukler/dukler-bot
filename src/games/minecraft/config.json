@@ -6,10 +6,11 @@
     },
     "stop":{
         "cmd":"stop",
-        "message":"Press any key to continue . . .",
+        "message":"Stopping server",
         "notifyDiscord":true
     },
     "start":{
+        "startingMessage":"Starting minecraft server",
         "path":"/home/dukler/minecraft",
         "message":"Done (",
         "notifyDiscord":true

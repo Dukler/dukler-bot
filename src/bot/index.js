@@ -26,16 +26,17 @@ async function executeCommand(command) {
 
 const getCommandByDiscordMessage = (message) => {
     const content = message.toString();
-    const words = content.split(" ");
-    // const params = [...words];
-    const params = '';
+    
+    const commandOption = content.split("server:")[1];
     const commandName = message.commandName;
-    const commandOption = content.split(":")[1];
+    const split = content.split("game:")[1].split("command:");
+    const game = split[0].replace(" ","");
+    const params = split[1];
     if (executeUtilsCommand(commandName, commandOption, message)) return false;
     return {
         message,
         commandName,
-        game: commandOption,
+        game,
         params
     }
 }

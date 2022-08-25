@@ -8,6 +8,7 @@ function ServerManager (config = {}) {
     this.serverRunning=false;
     this.channel= null;
     this.config = config;
+    this.onServerStarting = () => {}
     this.onServerRunning = () => {}
     this.onServerStopped = () => {}
     this.players = 0;
@@ -19,14 +20,18 @@ function ServerManager (config = {}) {
         this.config = config;
     }
     
-    this.start = async (onServerRunning) => {
+    this.start = async (onServerStarting, onServerRunning) => {
         const {spawn} = require('child_process')
         
         const initPath = this.config.start.path.substr(0, this.config.start.path.lastIndexOf("\\"))
         this.onServerRunning = onServerRunning;
+        this.onServerStarting = onServerStarting;
 
         const serverExecution = (data) =>{
             if (this.config.debug) console.log(String(data))
+            if (data.includes(this.config.start.startingMessage)) {
+                this.onServerStarting()
+            }
             if (data.includes(this.config.start.message)) {
                 this.serverRunning = true;
                 this.onServerRunning()
