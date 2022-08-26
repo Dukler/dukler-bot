@@ -37,7 +37,7 @@ function newGameServer(config) {
     const start = (params = {}, interaction) => {
         const shouldNotify = config.start.notifyDiscord;
         const {restarting} = params;
-        if(shouldNotify && !restarting) interaction.deferReply({ephemeral:true})
+        // if(shouldNotify && !restarting) interaction.deferReply({ephemeral:true})
         const send = 'editReply';
         
         if(serverManager.serverRunning) {
@@ -67,13 +67,13 @@ function newGameServer(config) {
     const stop = (params = {}, interaction) => {
         const send = 'editReply';
         if(!serverManager.serverRunning){
-            interaction.deferReply({ephemeral:true})
+            // interaction.deferReply({ephemeral:true})
             interaction[send]({content:`${config.server.name} server is not running!`,ephemeral:true});
             return
         }
         const {restarting, isAutoShutdown} = params;
         const shouldNotify = config.stop.notifyDiscord && !isAutoShutdown && !restarting;
-        if(shouldNotify) interaction.deferReply({ephemeral:true})
+        // if(shouldNotify) interaction.deferReply({ephemeral:true})
         serverManager.stop(()=>{
             if (shouldNotify) {
                 interaction[send]({content:`${config.server.name} server has stopped!`,ephemeral:true});
@@ -83,7 +83,7 @@ function newGameServer(config) {
     }
 
     const restart = (params={}, interaction) => {
-        interaction.deferReply({ephemeral:true})
+        //interaction.deferReply({ephemeral:true})
         stop({...params, restarting:true}, interaction)
         
         function checkFlag() {
