@@ -9,6 +9,7 @@
     "tipao":{
         "OS": "linux",
         "host": "10.160.196.2",
+        "console":"tmux",
         "username":"comanchero-s0",
         "password": "misterpasaeseblister"
     }

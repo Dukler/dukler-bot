@@ -21,9 +21,6 @@ function ServerManager (config = {}) {
     }
     
     this.start = async (onServerStarting, onServerRunning) => {
-        const {spawn} = require('child_process')
-        
-        const initPath = this.config.start.path.substr(0, this.config.start.path.lastIndexOf("\\"))
         this.onServerRunning = onServerRunning;
         this.onServerStarting = onServerStarting;
 
@@ -70,53 +67,6 @@ function ServerManager (config = {}) {
             port: 22,
             ...connections[this.config.server.remote]
         });
-
-        // let command = this.config.start.path,
-        //     args = [],
-        //     options = {detached: false, cwd:initPath};
-
-        // if (this.config.server.os == 'win32') {
-        //     options.shell = true;
-        //     command = "\""+command+"\"";
-        // }
-
-        // this.server = spawn(command,args,options);
-
-        // this.server.stdout.pipe(process.stdout);
-        // this.server.stderr.pipe(process.stderr);
-        
-
-        // this.server.stdout.on('data', async (data) => {
-        //     if(this.config.debug) console.log(String(data))
-        //     if(data.includes(this.config.start.message)){
-        //         this.serverRunning=true;
-        //         this.onServerRunning()
-        //     }
-        //     if(this.config.autoShutdown){
-        //         if(data.includes(this.config.autoShutdown.join)){
-        //             this.players ++
-        //         }
-        //         if(data.includes(this.config.autoShutdown.left)){
-        //             this.players --
-        //         }
-        //     }
-            
-        //     if(data.includes(this.config.stop.message)){
-        //         if(this.config.stop.notifyDiscord){
-        //             this.serverRunning=false;
-        //             this.onServerStopped()
-        //         }
-        //     }
-        //     this.onDataCallbacks.forEach((cb)=>{
-        //         cb(data);
-        //     })
-        // })
-        // this.server.stderr.on('data', (data) => {
-        //     console.log('Error: '+data);
-        // })
-        // this.server.on('close', (code) => {
-        //     console.log('Process exit code: '+code);
-        // })
     }
 
     this.stop = (onServerStopped)=> {
