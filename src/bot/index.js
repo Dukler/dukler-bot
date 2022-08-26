@@ -52,6 +52,7 @@ const getParam = (param) =>{
 const executeUtilsCommand = (command, commandOption, message) => {
     switch (command) {
         case 'java':
+            message.deferReply({ephemeral:true})
             const connections = require('../server/connections.json')
             const { OS, ...rest } = connections[commandOption]
             const { Client } = require('ssh2');
@@ -66,6 +67,7 @@ const executeUtilsCommand = (command, commandOption, message) => {
                 conn.shell((err, stream) => {
                     if (err) throw err;
                     stream.on('close', () => {
+                        
                         message.editReply({content:'Rip java.', ephemeral:true})
                         conn.end();
                     }).on('data', (data) => {
