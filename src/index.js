@@ -17,7 +17,7 @@ process.stdin.resume();//so the program will not close instantly
 
 
 client.once('ready', () => {
-    client.user.setPresence({ activities: [{ name: 'Click me!', type: ActivityType.Custom }] });
+    client.user.setPresence({ activities: [{ name: 'Click me!' }] });
     console.log('Ready!');
 })
 
