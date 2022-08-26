@@ -26,9 +26,12 @@ async function executeCommand(command) {
 
 
 const getCommandByDiscordMessage = (message) => {
-    const content = message.toString();
+    
     const getParam = (param) =>{
-        return content.split(`${param}:`)[1]?.trim();
+        const dataArr = message.options.data;
+        // return content.split(`${param}:`)[1]?.trim();
+        const pos = dataArr.findIndex(i => i.name === param);
+        return message.options.data[pos]?.value
     }
     
     const server = getParam("server");
