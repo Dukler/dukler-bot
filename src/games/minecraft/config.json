@@ -18,7 +18,8 @@
     "help": [
         "Descarga [esto](https://drive.google.com/drive/folders/1e5F8RcfOeCAPQh8mMfS0fNwfZxhbD1ip?usp=sharing).",
         "Abri un explorador de archivos, y en la barra de navegacion borra todo el texto y escribi %appdata% y toca enter",
-        "Una vez en appdata borra las carpetas .minecraft y .tlauncher si las tenes, despues crea una carpeta llamada .minecraft y extrae los contenidos de la descarga del paso 1 dentro de .minecraft",
+        "Una vez en appdata borra las carpetas .minecraft y .tlauncher si las tenes, despues crea una carpeta llamada .minecraft y extrae los contenidos de la turbicraft.zip del paso 1 dentro de .minecraft",
+        "Despues entra a la carpeta de mods en .minecraft si hay mods borralos, y extrae mods.zip dentro de esta carpeta",
         "Abri el TLauncher y abajo a la izquierda en username pone tu nombre, a la derecha de tu nombre elegi la version \"Release fabric-loader-0.14.9-1.18.2\"",
         "Abri el minecraft, agrega el server de tipao, la ip es: dukler.duckdns.org"
     ],
