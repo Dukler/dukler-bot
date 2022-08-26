@@ -81,13 +81,13 @@ function newGameServer(config) {
 
     const restart = ({interaction}) => {
         //interaction.deferReply({ephemeral:true})
-        stop({restarting:true}, interaction)
+        stop({restarting:true,interaction})
         
         function checkFlag() {
             if (serverManager.serverRunning === true) {
                 setTimeout(checkFlag, 100);
             } else {
-                start({restarting:true}, interaction)
+                start({restarting:true, interaction})
             }
         }
         checkFlag();
