@@ -5,7 +5,7 @@
         "remote": "tipao"
     },
     "stop": {
-        "cmd": "stop",
+        "cmd": "/stop",
         "message": "Stopping server",
         "notifyDiscord": true
     },
