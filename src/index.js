@@ -3,6 +3,7 @@ const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
 const bot = require('./bot')
 const process = require('process');
 const { helpModalHandler } = require('./ui/helpModal');
+const { type } = require('os');
 
 
 
@@ -17,7 +18,7 @@ process.stdin.resume();//so the program will not close instantly
 
 
 client.once('ready', () => {
-    client.user.setPresence({ activities: [{ name: 'Click me!' }] });
+    client.user.setPresence({ activities: [{ name: 'Click me!', type: ActivityType.Playing }] });
     console.log('Ready!');
 })
 
