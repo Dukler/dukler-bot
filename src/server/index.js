@@ -3,8 +3,7 @@ const { readdirSync } = require('fs');
 const { row, HelpEmbed } = require('../ui/helpModal');
 
 
-async function getGameServer(command) {
-    const { game, params, message } = command;
+async function getGameServer({game}) {
     const server = await (await import(`../games/${game}/index.js`)).default
     return server
 }
@@ -34,9 +33,8 @@ function newGameServer(config) {
         })();
     }
 
-    const start = (params = {}, interaction) => {
+    const start = ({restarting, interaction}) => {
         const shouldNotify = config.start.notifyDiscord;
-        const {restarting} = params;
         // if(shouldNotify && !restarting) interaction.deferReply({ephemeral:true})
         const send = 'editReply';
         
@@ -64,14 +62,13 @@ function newGameServer(config) {
             }
         );
     }
-    const stop = (params = {}, interaction) => {
+    const stop = ({restarting, isAutoShutdown, interaction}) => {
         const send = 'editReply';
         if(!serverManager.serverRunning){
             // interaction.deferReply({ephemeral:true})
             interaction[send]({content:`${config.server.name} server is not running!`,ephemeral:true});
             return
         }
-        const {restarting, isAutoShutdown} = params;
         const shouldNotify = config.stop.notifyDiscord && !isAutoShutdown && !restarting;
         // if(shouldNotify) interaction.deferReply({ephemeral:true})
         serverManager.stop(()=>{
@@ -82,33 +79,33 @@ function newGameServer(config) {
         serverManager.write(config.stop.cmd);
     }
 
-    const restart = (params={}, interaction) => {
+    const restart = ({interaction}) => {
         //interaction.deferReply({ephemeral:true})
-        stop({...params, restarting:true}, interaction)
+        stop({restarting:true}, interaction)
         
         function checkFlag() {
             if (serverManager.serverRunning === true) {
                 setTimeout(checkFlag, 100);
             } else {
-                start({...params, restarting:true}, interaction)
+                start({restarting:true}, interaction)
             }
         }
         checkFlag();
     }
 
-    const write = (params={},interaction) =>{
+    const write = ({commandString, interaction}) =>{
         if (interaction.member.roles.cache.find(r => r.name === "Game server admin")){
-            serverManager.write(params)
+            serverManager.write(commandString)
             interaction.editReply({content:"Command sent.",ephemeral:true})
         }else{
             interaction.editReply({content:"You do not have permissions.",ephemeral:true})
         }
     }
 
-    const help = (params={},interaction) =>{
+    const help = ({game,interaction}) =>{
         console.log(interaction)
         interaction.reply({embeds:[HelpEmbed({
-            game:params.game,
+            game,
             description:serverManager.config.help[0],
             index:1,
             length:serverManager.config.help.length,

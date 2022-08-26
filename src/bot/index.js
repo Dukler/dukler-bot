@@ -3,8 +3,9 @@ const { getGameServer } = require('../server');
 
 async function executeCommand(command) {
     if (command) {
-        const { commandName, game, params, message } = command;
-        const props = {game, ...params}
+        const { commandName, interaction } = command;
+        // let props = {game, params};
+        // if ( typeof params === 'object' && params !== null ) props = {game, ...params}
         let server;
         try {
             server = await getGameServer(command)
@@ -13,8 +14,8 @@ async function executeCommand(command) {
         }
         if (server[commandName] != null) {
             try {
-                await message.deferReply({ephemeral:true})
-                server[commandName](props, message);
+                await interaction.deferReply({ephemeral:true})
+                server[commandName](command);
             } catch (error) {
                 return console.error(error)
             }
@@ -26,37 +27,34 @@ async function executeCommand(command) {
 
 
 
-const getCommandByDiscordMessage = (message) => {
+const getCommandByDiscordMessage = (interaction) => {
     
     const getParam = (param) =>{
-        const dataArr = message.options.data;
+        const dataArr = interaction.options.data;
         // return content.split(`${param}:`)[1]?.trim();
         const pos = dataArr.findIndex(i => i.name === param);
-        return message.options.data[pos]?.value
+        return interaction.options.data[pos]?.value
     }
     
     const server = getParam("server");
-    const commandName = message.commandName;
+    const commandName = interaction.commandName;
     // const split = content.split("game:")[1]?.split("command:");
     const game = getParam("game");
-    const params = getParam("command");
-    if (executeUtilsCommand(commandName, server, message)) return false;
+    const commandString = getParam("command");
+    if (executeUtilsCommand(commandName, server, interaction)) return false;
     return {
-        message,
+        interaction,
         commandName,
         game,
-        params
+        commandString
     }
 }
-const getParam = (param) =>{
-    content.split(`${param}:`)[1].trim();
-}
 
 
-const executeUtilsCommand = (command, commandOption, message) => {
+const executeUtilsCommand = (command, commandOption, interaction) => {
     switch (command) {
         case 'java':
-            message.deferReply({ephemeral:true})
+            interaction.deferReply({ephemeral:true})
             const connections = require('../server/connections.json')
             const { OS, ...rest } = connections[commandOption]
             const { Client } = require('ssh2');
@@ -72,7 +70,7 @@ const executeUtilsCommand = (command, commandOption, message) => {
                     if (err) throw err;
                     stream.on('close', () => {
                         
-                        message.editReply({content:'Rip java.', ephemeral:true})
+                        interaction.editReply({content:'Rip java.', ephemeral:true})
                         conn.end();
                     }).on('data', (data) => {
                         //TODO: check for java process
