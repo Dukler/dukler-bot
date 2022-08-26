@@ -13,7 +13,7 @@ async function executeCommand(command) {
         }
         if (server[commandName] != null) {
             try {
-                message.deferReply({ephemeral:true})
+                await message.deferReply({ephemeral:true})
                 server[commandName](props, message);
             } catch (error) {
                 return console.error(error)
