@@ -66,6 +66,7 @@ function newGameServer(config) {
     }
     const stop = (params = {}, interaction) => {
         const send = 'editReply';
+        interaction[send]({content:`${config.server.name} server has stopped!`,ephemeral:true});
         if(!serverManager.serverRunning){
             // interaction.deferReply({ephemeral:true})
             interaction[send]({content:`${config.server.name} server is not running!`,ephemeral:true});
