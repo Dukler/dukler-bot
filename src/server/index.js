@@ -104,7 +104,7 @@ function newGameServer(config) {
 
     const help = ({game,interaction}) =>{
         console.log(interaction)
-        interaction.reply({embeds:[HelpEmbed({
+        interaction.editReply({embeds:[HelpEmbed({
             game,
             description:serverManager.config.help[0],
             index:1,

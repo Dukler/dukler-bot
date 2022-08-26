@@ -3,11 +3,9 @@ const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
 const bot = require('./bot')
 const process = require('process');
 const { helpModalHandler } = require('./ui/helpModal');
-const { type } = require('os');
 
 
 
-// const client = new Discord.Client({ autoReconnect: true });
 const client = new Client({ intents: [
     GatewayIntentBits.Guilds, 
     GatewayIntentBits.GuildMessages,

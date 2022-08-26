@@ -14,6 +14,7 @@ async function executeCommand(command) {
         }
         if (server[commandName] != null) {
             try {
+                console.log(`${interaction.user.username} executed ${commandName}`)
                 await interaction.deferReply({ephemeral:true})
                 server[commandName](command);
             } catch (error) {

@@ -53,7 +53,7 @@ function ServerManager (config = {}) {
             console.log('Client :: ready');
             this.conn.shell((err, stream) => {
                 this.server = stream;
-                if (err) throw err;
+                if (err) console.log(err)
                 stream.on('close', () => {
                     console.log('Stream :: close');
                     this.conn.end();
