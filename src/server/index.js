@@ -1,4 +1,6 @@
+
 const { readdirSync } = require('fs');
+const { row, HelpEmbed } = require('../ui/helpModal');
 
 
 async function getGameServer(command) {
@@ -33,21 +35,29 @@ function newGameServer(config) {
     }
 
     const start = (params = {}, interaction) => {
+        const shouldNotify = config.start.notifyDiscord;
+        const {restarting} = params;
+        if(shouldNotify && !restarting) interaction.deferReply({ephemeral:true})
+        const send = 'editReply';
+        
         if(serverManager.serverRunning) {
-            interaction.reply({content:`${config.server.name} server already running!` , ephemeral: true })
+            interaction[send]({content:`${config.server.name} server already running!` , ephemeral: true })
             return;
         }
-        const {restarting} = params;
-        const send = !interaction.deferred ? 'reply' : 'followUp'
+        
+        
         serverManager.start(
             ()=>{
-                if (config.start.notifyDiscord && !restarting) {
-                    interaction[send]({content:'Server starting... ' , ephemeral: true });
+                if (shouldNotify) {
+                    if(restarting){
+                        interaction[send]({content:`${config.server.name} server restarting...`,ephemeral:true })
+                    }else{
+                        interaction[send]({content:'Server starting... ' , ephemeral: true });
+                    }
                 }
             },
             ()=>{
                 if (config.start.notifyDiscord) {
-                    // channel.send(`${config.server.name} server has started!`);
                     interaction[send]({content:`${config.server.name} server has started!`, ephemeral: true });
                 }
                 if (config.autoShutdown) autoShutdown()
@@ -56,9 +66,11 @@ function newGameServer(config) {
     }
     const stop = (params = {}, interaction) => {
         const {restarting, isAutoShutdown} = params;
+        const shouldNotify = config.stop.notifyDiscord && !isAutoShutdown && !restarting;
+        if(shouldNotify) interaction.deferReply({ephemeral:true})
         serverManager.stop(()=>{
-            if (config.stop.notifyDiscord && !isAutoShutdown && !restarting) {
-                const send = !interaction.deferred ? 'reply' : 'followUp'
+            if (shouldNotify) {
+                const send = 'editReply';
                 interaction[send]({content:`${config.server.name} server has stopped!`,ephemeral:true});
             }
         });
@@ -66,13 +78,13 @@ function newGameServer(config) {
     }
 
     const restart = (params={}, interaction) => {
+        interaction.deferReply({ephemeral:true})
         stop({...params, restarting:true}, interaction)
-        interaction.reply({content:`${config.server.name} server restarting...`,ephemeral:true })
+        
         function checkFlag() {
             if (serverManager.serverRunning === true) {
                 setTimeout(checkFlag, 100);
             } else {
-                /* do something*/
                 start({...params, restarting:true}, interaction)
             }
         }
@@ -88,7 +100,17 @@ function newGameServer(config) {
         }
     }
 
-    return { start, stop, restart, write }
+    const help = (params={},interaction) =>{
+        console.log(interaction)
+        interaction.reply({embeds:[HelpEmbed({
+            game:params.game,
+            description:serverManager.config.help[0],
+            index:1,
+            length:serverManager.config.help.length,
+        })], ephemeral:true, components:[row]})
+    }
+
+    return { start, stop, restart, write, help}
 }
   
 const getCurrentGames = ()=>{
@@ -111,3 +133,5 @@ module.exports = {
 //     newGameServer,
 //     getGameServer
 // }
+
+

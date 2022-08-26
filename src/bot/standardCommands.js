@@ -23,6 +23,11 @@ const restart = new SlashCommandBuilder()
     .setDescription('Restart game server')
     .addStringOption(options)
 
+const help = new SlashCommandBuilder()
+    .setName('help')
+    .setDescription('Help connecting to the server')
+    .addStringOption(options)
+
 const write = new SlashCommandBuilder()
     .setName('write')
     .setDescription('Sends a command to the game server')
@@ -38,5 +43,6 @@ module.exports = {
     start,
     stop,
     restart,
-    write
+    write,
+    help
 }

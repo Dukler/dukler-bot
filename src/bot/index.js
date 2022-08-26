@@ -4,7 +4,8 @@ const { getGameServer } = require('../server');
 async function executeCommand(command) {
     if (command) {
         const { commandName, game, params, message } = command;
-        let server; 73197319
+        const props = {game, ...params}
+        let server;
         try {
             server = await getGameServer(command)
         } catch (error) {
@@ -12,7 +13,7 @@ async function executeCommand(command) {
         }
         if (server[commandName] != null) {
             try {
-                server[commandName](params, message);
+                server[commandName](props, message);
             } catch (error) {
                 return console.error(error)
             }
@@ -26,13 +27,16 @@ async function executeCommand(command) {
 
 const getCommandByDiscordMessage = (message) => {
     const content = message.toString();
+    const getParam = (param) =>{
+        return content.split(`${param}:`)[1]?.trim();
+    }
     
-    const commandOption = content.split("server:")[1];
+    const server = getParam("server");
     const commandName = message.commandName;
-    const split = content.split("game:")[1].split("command:");
-    const game = split[0].replace(" ","");
-    const params = split[1];
-    if (executeUtilsCommand(commandName, commandOption, message)) return false;
+    // const split = content.split("game:")[1]?.split("command:");
+    const game = getParam("game");
+    const params = getParam("command");
+    if (executeUtilsCommand(commandName, server, message)) return false;
     return {
         message,
         commandName,
@@ -40,7 +44,9 @@ const getCommandByDiscordMessage = (message) => {
         params
     }
 }
-
+const getParam = (param) =>{
+    content.split(`${param}:`)[1].trim();
+}
 
 
 const executeUtilsCommand = (command, commandOption, message) => {
@@ -60,7 +66,7 @@ const executeUtilsCommand = (command, commandOption, message) => {
                 conn.shell((err, stream) => {
                     if (err) throw err;
                     stream.on('close', () => {
-                        message.reply({content:'Rip java.', ephemeral:true})
+                        message.editReply({content:'Rip java.', ephemeral:true})
                         conn.end();
                     }).on('data', (data) => {
                         //TODO: check for java process

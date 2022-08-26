@@ -1,10 +1,18 @@
 const { SlashCommandBuilder } = require('discord.js');
+const configs = require('../server/connections.json');
 
 const connectionOptions = option => option.setName('server')
     .setDescription('Select server')
     .setRequired(true)
     .addChoices(
-        ...Object.keys(require('../server/connections.json')).map(key=>{return{name:key, value:key}})
+        
+        ...Object.keys(configs)
+        .filter(server => {
+            return !configs[server].disabled
+        })
+        .map(key=>{
+            return{name:key, value:key}
+        })
     )
 
 const java = new SlashCommandBuilder()

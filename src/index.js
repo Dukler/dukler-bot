@@ -2,6 +2,7 @@
 const { Client, GatewayIntentBits  } = require('discord.js');
 const bot = require('./bot')
 const process = require('process');
+const { helpModalHandler } = require('./ui/helpModal');
 
 
 
@@ -21,25 +22,23 @@ client.once('ready', () => {
 
 client.on('error', console.error);
 
+// const filter = i => i.customId === 'next';
 
-// client.on('messageCreate', message => {
-//     if (message.member) {
-//         if (message.member.roles.cache.find(r => r.name === "bot user")) {
-//             if (message.channel.name === "bot" || message.channel.name === "dev") {
-//                 const command = bot.getCommandByDiscordMessage(message);
-//                 if(command)bot.executeCommand(command);
-//             } else if (message.content.includes('!')) {
-//                 message.member.send("Ahora hay que usar el canal de texto 'bot' para usar el bot de minecraft.");
-//                 message.member.send("Tu comando fue rechazado.");
-//                 message.delete();
-//             }
-//         }
+// const collector = interaction.channel.createMessageComponentCollector({ filter, time: 15000 });
 
-//     }
+// collector.on('collect', async i => {
+// 	await i.update({ content: 'A button was clicked!', components: [] });
 // });
 
+
+//buttons interactions
 client.on('interactionCreate', interaction => {
-    // console.log(interaction)
+    if (!interaction.isButton()) return;
+    helpModalHandler(interaction)
+});
+
+//chat interaction
+client.on('interactionCreate', interaction => {
     if (!interaction.isChatInputCommand()) return;
     const command = bot.getCommandByDiscordMessage(interaction);
     if(command)bot.executeCommand(command);
