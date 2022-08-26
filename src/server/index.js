@@ -99,9 +99,9 @@ function newGameServer(config) {
     const write = (params={},interaction) =>{
         if (interaction.member.roles.cache.find(r => r.name === "Game server admin")){
             serverManager.write(params)
-            interaction.reply({content:"Command sent.",ephemeral:true})
+            interaction.editReply({content:"Command sent.",ephemeral:true})
         }else{
-            interaction.reply({content:"You do not have permissions.",ephemeral:true})
+            interaction.editReply({content:"You do not have permissions.",ephemeral:true})
         }
     }
 
