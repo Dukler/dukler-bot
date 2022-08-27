@@ -89,14 +89,25 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                 spawn = require('child_process').spawn;
                 let passwordSent = false;
                 // const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2'],{shell:true})
-                const proc = spawn('ping google.com',[],{shell:true})
+                const openShellMsg = 'Shell open'
+                const proc = spawn(`echo ${openShellMsg}`,[],{shell:true})
                 proc.stdout.pipe(proc.stdout);
                 proc.stderr.pipe(proc.stderr);
-                proc.stdin.write('ssh'+'comanchero-s0@' + '10.160.196.2')
-                proc.stdin.write('misterpasaeseblister' + '\r\n')
-                proc.stdout.on('data', (data) => {
+                
+                
+                proc.stdout.on('data', async (bytes) => {
+                    const data = bytes.toString()
+                    console.log(data.toString())
+                    if(!passwordSent){
+                        if(data.includes(openShellMsg)){
+                            proc.stdin.write('ssh '+'comanchero-s0@' + '10.160.196.2' + '\r\n')
+                        }
+                        if(data.includes('password:')){
+                            proc.stdin.write('misterpasaeseblister' + '\r\n')
+                        }
+                    }
                     console.log('asdas')
-                    console.log(data)
+                    
                     // console.log('includes',data.includes('password:'))
                     // if(!passwordSent && data.includes('password:')){
                     //     console.log('password found')
