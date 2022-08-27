@@ -92,6 +92,7 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                 proc.stdout.on('data', (data) => {
                     console.log(data)
                     if(!passwordSent && data.includes('password:')){
+                        console.log('password found')
                         server.stdin.write('misterpasaeseblister' + '\n')
                         // server.stdin.write('ping -D google.com' + '\r\n')
                     }
