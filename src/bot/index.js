@@ -88,9 +88,11 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
             try {
                 spawn = require('child_process').spawn;
                 let passwordSent = false;
-                const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2'],{shell:true})
+                // const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2'],{shell:true})
+                const proc = spawn({shell:true})
                 proc.stdout.pipe(proc.stdout);
                 proc.stderr.pipe(proc.stderr);
+                proc.stdin.write('ssh'+'comanchero-s0@' + '10.160.196.2')
                 proc.stdin.write('misterpasaeseblister' + '\r\n')
                 proc.stdout.on('data', (data) => {
                     console.log('asdas')
