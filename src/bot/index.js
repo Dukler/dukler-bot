@@ -100,7 +100,8 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                     console.log(data.toString())
                     if(!passwordSent){
                         if(data.includes(openShellMsg)){
-                            proc.stdin.write('ssh '+'comanchero-s0@' + '10.160.196.2' + '\n')
+                            // proc.stdin.write('ssh '+'comanchero-s0@' + '10.160.196.2' + '\n')
+                            proc.stdin.write('echo asdasd' + '\n')
                         }
                         // if(data.includes('password:')){
                         //     proc.stdin.write('misterpasaeseblister' + '\r\n')
