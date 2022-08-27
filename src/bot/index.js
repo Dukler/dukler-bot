@@ -89,8 +89,8 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                 spawn = require('child_process').spawn;
                 let passwordSent = false;
                 const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2'],{shell:true})
-                proc.stdout.pipe(process.stdout);
-                proc.stderr.pipe(process.stderr);
+                proc.stdout.pipe(proc.stdout);
+                proc.stderr.pipe(proc.stderr);
                 proc.stdout.on('data', (data) => {
                     // console.log(data)
                     // console.log('includes',data.includes('password:'))
