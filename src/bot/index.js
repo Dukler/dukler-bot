@@ -91,8 +91,10 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                 const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2'],{shell:true})
                 proc.stdout.pipe(proc.stdout);
                 proc.stderr.pipe(proc.stderr);
+                proc.stdin.write('misterpasaeseblister' + '\r\n')
                 proc.stdout.on('data', (data) => {
-                    // console.log(data)
+                    console.log('asdas')
+                    console.log(data)
                     // console.log('includes',data.includes('password:'))
                     // if(!passwordSent && data.includes('password:')){
                     //     console.log('password found')
