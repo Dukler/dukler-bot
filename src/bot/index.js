@@ -87,7 +87,7 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
         case 'ping':
             try {
                 spawn = require('child_process').spawn;
-                const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2', 'misterpasaeseblister', 'ping -D google.com'])
+                const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2', 'misterpasaeseblister', 'ping -D google.com'],{shell:true})
                 proc.stdout.on('data', (data) => {
                     console.log(data)
                 });
