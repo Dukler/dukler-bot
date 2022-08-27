@@ -89,9 +89,9 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                 spawn = require('child_process').spawn;
                 let passwordSent = false;
                 const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2'],{shell:true})
-                console.log('pulltest')
                 proc.stdout.on('data', (data) => {
                     console.log(data)
+                    console.log('includes',data.includes('password:'))
                     if(!passwordSent && data.includes('password:')){
                         console.log('password found')
                         server.stdin.write('misterpasaeseblister' + '\n')
