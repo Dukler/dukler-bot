@@ -90,7 +90,7 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                 let passwordSent = false;
                 // const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2'],{shell:true})
                 const openShellMsg = 'Shell open'
-                const proc = spawn(`echo ${openShellMsg}`,[],{shell:true})
+                const proc = spawn(`echo ${openShellMsg}`,[],{detached:false,shell:true})
                 proc.stdout.pipe(process.stdout);
                 proc.stderr.pipe(process.stderr);
                 
