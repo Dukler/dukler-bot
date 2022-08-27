@@ -88,7 +88,7 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
             try {
                 spawn = require('child_process').spawn;
                 let passwordSent = false;
-                const proc = spawn('ssh', [``+'comanchero-s0@' + '10.160.196.2','./home/comanchero-s0/Documents/ping.sh'],{detached:false,shell:true})
+                const proc = spawn('ssh', [``+'comanchero-s0@' + '10.160.196.2','/home/comanchero-s0/Documents/ping.sh'],{detached:false,shell:true})
                 
                 // const openShellMsg = 'Shell open'
                 // const proc = spawn(`echo ${openShellMsg}`,[],{detached:false,shell:true})
