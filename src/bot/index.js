@@ -53,72 +53,44 @@ const getCommandByDiscordMessage = (interaction) => {
 
 
 const executeUtilsCommand = (command, commandOption, interaction) => {
+    const connections = require('../server/connections.json')
+    const { OS, host, username } = connections[commandOption]
     switch (command) {
         case 'java':
             interaction.deferReply({ephemeral:true})
-            const connections = require('../server/connections.json')
-            const { OS, ...rest } = connections[commandOption]
-            const { Client } = require('ssh2');
-            const conn = new Client();
-            let cmd = ''
-            if (OS === 'win32') {
-                cmd = "taskkill.exe /F /IM java.exe";
-            } else {
-                cmd = "killall java"
-            }
-            conn.on('ready', () => {
-                conn.shell((err, stream) => {
-                    if (err) throw err;
-                    stream.on('close', () => {
-                        
-                        interaction.editReply({content:'Rip java.', ephemeral:true})
-                        conn.end();
-                    }).on('data', (data) => {
-                        //TODO: check for java process
-                    });
-                    stream.end(`${cmd}\n\exit\n`);
-                });
-            }).connect({
-                port: 22,
-                ...rest
-            });
+            const cmd = OS === 'win32' ? "taskkill.exe /F /IM java.exe" : "killall java";
+            
+            runRemote({run:cmd, username, host, onExit:()=>interaction.editReply({content:'Rip java.', ephemeral:true})})
 
             return true;
         case 'ping':
-            try {
-                spawn = require('child_process').spawn;
-                let passwordSent = false;
-                const proc = spawn('ssh', [``+'comanchero-s0@' + '10.160.196.2','/home/comanchero-s0/Documents/ping.sh'],{detached:false,shell:true})
-                
-                // const openShellMsg = 'Shell open'
-                // const proc = spawn(`echo ${openShellMsg}`,[],{detached:false,shell:true})
-                proc.stdout.pipe(process.stdout);
-                proc.stderr.pipe(process.stderr);
-                // proc.stdin.write('misterpasaeseblister' + '\r\n')
-                // proc.stdin.write('ping google.com -D' + '\r\n')
-                
-                proc.stdout.on('data', async (bytes) => {
-                    const data = bytes.toString()
-                    console.log(data.toString())
-                    // console.log('asdas')
-                    
-                    // console.log('includes',data.includes('password:'))
-                    // if(!passwordSent && data.includes('password:')){
-                    //     console.log('password found')
-                    //     server.stdin.write('misterpasaeseblister' + '\n')
-                    //     // server.stdin.write('ping -D google.com' + '\r\n')
-                    // }
-                });
-                proc.on('exit', ()=>{
-                    console.log('exiiii')
-                })
-            } catch (error) {
-                console.log(error)
-            }
+            runRemote({run:'/home/comanchero-s0/Documents/ping.sh', commandOption, username, host})
             
             return true
         default:
             return false;
+    }
+}
+
+const runRemote = ({run, username, host, onExit = ()=>console.log('exit')}) =>{
+    try {
+        const spawn = require('child_process').spawn;
+        
+        const proc = spawn('ssh', [`${username}@${host}`, run],{detached:false,shell:true})
+
+        proc.stdout.pipe(process.stdout);
+        proc.stderr.pipe(process.stderr);
+        // proc.stdin.write('ping google.com -D' + '\r\n')
+        
+        proc.stdout.on('data', async (bytes) => {
+            const data = bytes.toString()
+            console.log(data.toString())
+        });
+        proc.on('exit', ()=>{
+            onExit()
+        })
+    } catch (error) {
+        console.log(error)
     }
 }
 
