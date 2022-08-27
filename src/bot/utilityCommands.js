@@ -20,6 +20,12 @@ const java = new SlashCommandBuilder()
     .setDescription('Kill java')
     .addStringOption(connectionOptions)
 
+const ping = new SlashCommandBuilder()
+    .setName('ping')
+    .setDescription('ping server')
+    .addStringOption(connectionOptions)
+
 module.exports={
-    java
+    java,
+    ping
 }
