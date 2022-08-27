@@ -95,7 +95,7 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                 proc.stdout.pipe(process.stdout);
                 proc.stderr.pipe(process.stderr);
                 // proc.stdin.write('misterpasaeseblister' + '\r\n')
-                proc.stdin.write('ping google.com -D' + '\r\n')
+                // proc.stdin.write('ping google.com -D' + '\r\n')
                 
                 proc.stdout.on('data', async (bytes) => {
                     const data = bytes.toString()
