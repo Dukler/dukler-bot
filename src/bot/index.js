@@ -88,7 +88,7 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
             try {
                 spawn = require('child_process').spawn;
                 let passwordSent = false;
-                const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2'],{detached:false,shell:true})
+                const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2','./ping.sh'],{detached:false,shell:true})
                 
                 // const openShellMsg = 'Shell open'
                 // const proc = spawn(`echo ${openShellMsg}`,[],{detached:false,shell:true})
@@ -100,16 +100,7 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                 proc.stdout.on('data', async (bytes) => {
                     const data = bytes.toString()
                     console.log(data.toString())
-                    if(!passwordSent){
-                        if(data.includes(openShellMsg)){
-                            // proc.stdin.write('ssh '+'comanchero-s0@' + '10.160.196.2' + '\n')
-                            // proc.stdin.write('echo asdasd' + '\n')
-                        }
-                        // if(data.includes('password:')){
-                        //     proc.stdin.write('misterpasaeseblister' + '\r\n')
-                        // }
-                    }
-                    console.log('asdas')
+                    // console.log('asdas')
                     
                     // console.log('includes',data.includes('password:'))
                     // if(!passwordSent && data.includes('password:')){
