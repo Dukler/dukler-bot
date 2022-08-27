@@ -90,11 +90,11 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                 let passwordSent = false;
                 const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2'],{shell:true})
                 proc.stdout.on('data', (data) => {
+                    console.log(data)
                     if(!passwordSent && data.includes('password:')){
-                        server.stdin.write('misterpasaeseblister' + '\r\n')
+                        server.stdin.write('misterpasaeseblister' + '\n')
                         // server.stdin.write('ping -D google.com' + '\r\n')
                     }
-                    console.log(data)
                 });
             } catch (error) {
                 console.log(error)
