@@ -102,9 +102,9 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                         if(data.includes(openShellMsg)){
                             proc.stdin.write('ssh '+'comanchero-s0@' + '10.160.196.2' + '\r\n')
                         }
-                        if(data.includes('password:')){
-                            proc.stdin.write('misterpasaeseblister' + '\r\n')
-                        }
+                        // if(data.includes('password:')){
+                        //     proc.stdin.write('misterpasaeseblister' + '\r\n')
+                        // }
                     }
                     console.log('asdas')
                     
