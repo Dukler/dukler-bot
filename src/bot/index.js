@@ -101,7 +101,7 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                     if(!passwordSent){
                         if(data.includes(openShellMsg)){
                             // proc.stdin.write('ssh '+'comanchero-s0@' + '10.160.196.2' + '\n')
-                            proc.stdin.write('echo asdasd' + '\n')
+                            // proc.stdin.write('echo asdasd' + '\n')
                         }
                         // if(data.includes('password:')){
                         //     proc.stdin.write('misterpasaeseblister' + '\r\n')
@@ -116,6 +116,9 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                     //     // server.stdin.write('ping -D google.com' + '\r\n')
                     // }
                 });
+                proc.on('exit', ()=>{
+                    console.log('exiiii')
+                })
             } catch (error) {
                 console.log(error)
             }
