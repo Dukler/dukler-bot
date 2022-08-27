@@ -87,8 +87,13 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
         case 'ping':
             try {
                 spawn = require('child_process').spawn;
-                const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2 && misterpasaeseblister && ping -D google.com'],{shell:true})
+                let passwordSent = false;
+                const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2'],{shell:true})
                 proc.stdout.on('data', (data) => {
+                    if(!passwordSent && data.includes('password:')){
+                        server.stdin.write('misterpasaeseblister' + '\r\n')
+                        // server.stdin.write('ping -D google.com' + '\r\n')
+                    }
                     console.log(data)
                 });
             } catch (error) {
