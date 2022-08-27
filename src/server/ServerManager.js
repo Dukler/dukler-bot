@@ -1,8 +1,8 @@
-const { Client } = require('ssh2');
+// const { Client } = require('ssh2');
 const connections = require('./connections.json')
 
 function ServerManager (config = {}) {
-    this.conn = new Client();
+    // this.conn = new Client();
     this.server = null;
     this.onDataCallbacks=[];
     this.serverRunning=false;
@@ -21,8 +21,15 @@ function ServerManager (config = {}) {
     }
     
     this.start = async (onServerStarting, onServerRunning) => {
+        const {spawn} = require('child_process')
+        const {host, username} = connections[this.config.server.remote]
+        const startPath = this.config.start.path + '/start.sh'
+        this.server = spawn('ssh', [`${username}@${host}`, startPath],{detached:false,shell:true})
         this.onServerRunning = onServerRunning;
         this.onServerStarting = onServerStarting;
+
+        this.server.stdout.pipe(process.stdout);
+        this.server.stderr.pipe(process.stderr);
 
         const serverExecution = (data) =>{
             if (this.config.debug) console.log(String(data))
@@ -49,24 +56,16 @@ function ServerManager (config = {}) {
                 }
             }
         }
-        this.conn.on('ready', () => {
-            console.log('Client :: ready');
-            this.conn.shell((err, stream) => {
-                this.server = stream;
-                if (err) console.log(err)
-                stream.on('close', () => {
-                    console.log('Stream :: close');
-                    this.conn.end();
-                }).on('data', (data) => {
-                    serverExecution(data)
-                });
-                stream.write(`cd ${this.config.start.path}\n ./start.sh\n`)
-                // stream.end('ls -l\nexit\n');
-            });
-        }).connect({
-            port: 22,
-            ...connections[this.config.server.remote]
-        });
+        this.server.stdout.on('data', async (data) => {
+            serverExecution(data)
+            // console.log(data.toString());
+        })
+        this.server.stderr.on('data', (data) => {
+            console.log('Error: '+data);
+        })
+        this.server.on('close', (code) => {
+            console.log('Process exit code: '+code);
+        })
     }
 
     this.stop = (onServerStopped)=> {
@@ -75,7 +74,7 @@ function ServerManager (config = {}) {
 
     this.write = (message) =>{
         if (this.server !== null && this.serverRunning) {
-            this.server.write(message + '\n');
+            this.server.stdin.write(message + '\r\n');
         }
     }
 
