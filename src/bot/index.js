@@ -54,7 +54,9 @@ const getCommandByDiscordMessage = (interaction) => {
 
 const executeUtilsCommand = (command, commandOption, interaction) => {
     const connections = require('../server/connections.json')
-    const { OS, host, username } = connections[commandOption]
+    if(!commandOption) return
+    const { OS, host, username } = connections?.[commandOption]
+    console.log(asd);
     switch (command) {
         case 'java':
             interaction.deferReply({ephemeral:true})
