@@ -91,8 +91,8 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
                 // const proc = spawn('ssh', ['comanchero-s0@' + '10.160.196.2'],{shell:true})
                 const openShellMsg = 'Shell open'
                 const proc = spawn(`echo ${openShellMsg}`,[],{shell:true})
-                proc.stdout.pipe(proc.stdout);
-                proc.stderr.pipe(proc.stderr);
+                proc.stdout.pipe(process.stdout);
+                proc.stderr.pipe(process.stderr);
                 
                 
                 proc.stdout.on('data', async (bytes) => {
