@@ -45,7 +45,9 @@ function newGameServer(config) {
             interaction[send]({content:`${config.server.name} server already running!` , ephemeral: true })
             return;
         }
-        if (!await isAlive(host)) {
+        const alive = await isAlive(host);
+        console.log(alive)
+        if (!alive) {
             interaction[send]({content:`Server muerto, llamalo a ${config.server.remote}` , ephemeral: true })
             return
         }
