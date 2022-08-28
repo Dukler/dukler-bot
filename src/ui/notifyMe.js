@@ -33,8 +33,7 @@ const notifyMeHandler = async (interaction) => {
             }
         })
         await interaction.update({content:`Cuando se resuelva la conexion con el ${game} te aviso.`,components:[]})
-        // const host = connections[connection].host
-        const host = "192.168.1.40"
+        const host = connections[connection].host
         let alive = false;
         async function checkFlag() {
             if (alive === false) {
