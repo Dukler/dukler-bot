@@ -1,6 +1,7 @@
 
 const { readdirSync } = require('fs');
 const { row, HelpEmbed } = require('../ui/helpModal');
+const { isAlive } = require('./utils');
 
 
 async function getGameServer({game}) {
@@ -33,14 +34,20 @@ function newGameServer(config) {
         })();
     }
 
-    const start = ({restarting, interaction}) => {
+    const start = async ({restarting, interaction}) => {
         const shouldNotify = config.start.notifyDiscord;
         // if(shouldNotify && !restarting) interaction.deferReply({ephemeral:true})
+        
+        const host = require('./connections.json')[config.server.remote].host;
         const send = 'editReply';
         
         if(serverManager.serverRunning) {
             interaction[send]({content:`${config.server.name} server already running!` , ephemeral: true })
             return;
+        }
+        if (!await isAlive(host)) {
+            interaction[send]({content:`Server muerto, llamalo a ${config.server.remote}` , ephemeral: true })
+            return
         }
         
         
