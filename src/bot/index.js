@@ -65,9 +65,10 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
 
             return true;
         case 'ping':
+            const path = __dirname + '../utils/ping.sh'
             // runRemote({run:'/home/comanchero-s0/Documents/ping.sh', commandOption, username, host})
             // const asd = require('../utils/ping.sh')
-            runLocal({run:['../utils/ping.sh',String(host)]})
+            runLocal({run:[path,String(host)]})
             
             return true
         default:
