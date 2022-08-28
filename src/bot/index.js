@@ -65,6 +65,7 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
 
             return true;
         case 'ping':
+            interaction.deferReply({ephemeral:true})
             // const path = __dirname + '/../utils/ping.sh'
             // interaction.deferReply({ephemeral:true})
             // const onExit = (code) =>{
