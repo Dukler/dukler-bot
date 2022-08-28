@@ -38,7 +38,7 @@ const notifyMeHandler = async (interaction) => {
         async function checkFlag() {
             if (alive === false) {
                 alive = await isAlive(host)
-                setTimeout(checkFlag, 120000);
+                setTimeout(checkFlag, 30000);
             } else {
                 user.send(`Ahi volvio el ${game} capo.`)
             }
