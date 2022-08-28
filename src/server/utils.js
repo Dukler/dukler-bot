@@ -1,6 +1,6 @@
 const isAlive = (host)=> new Promise((resolve,reject) =>{
     // const ping = require('../utils/ping.sh')
-    const path = __dirname + '\\..\\utils\\ping.sh'
+    const path = __dirname + '/../utils/ping.sh'
     const onExit = (code) =>{
         if (code === 0) resolve (true)
         resolve (false)
