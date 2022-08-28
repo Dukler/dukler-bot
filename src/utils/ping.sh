@@ -3,9 +3,9 @@ SUCCESS=$?
 
 if [ $SUCCESS -eq 0 ]
 then
-  echo "$1 is alive"
+  return 0
 else
-  echo "$1 is dead"
+  return 1
 fi
 #EOF
 
