@@ -71,7 +71,7 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
             //     if (code === 1) interaction.editReply({content:'Servidor muerto.', ephemeral:true})
             // }
             // runLocal({run:[path,String(host)], onExit})
-            utilCommands(host)
+            utilCommands.isAlive(host)
                 .then(()=>{
                     interaction.editReply({content:'Vivo', ephemeral:true})
                 })
