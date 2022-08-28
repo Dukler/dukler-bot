@@ -65,19 +65,43 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
 
             return true;
         case 'ping':
-            const path = __dirname + '/../utils/ping.sh'
-            // runRemote({run:'/home/comanchero-s0/Documents/ping.sh', commandOption, username, host})
-            // const asd = require('../utils/ping.sh')
-            runLocal({run:[path,String(host)]})
+            // const path = __dirname + '/../utils/ping.sh'
+            // interaction.deferReply({ephemeral:true})
+            // const onExit = (code) =>{
+            //     if (code === 1) interaction.editReply({content:'Servidor muerto.', ephemeral:true})
+            // }
+            // runLocal({run:[path,String(host)], onExit})
+            utilCommands(host)
+                .then(()=>{
+                    interaction.editReply({content:'Vivo', ephemeral:true})
+                })
+                .catch(()=>{
+                    interaction.editReply({content:'Muerto', ephemeral:true})
+                })
             
             return true
         default:
             return false;
     }
 }
+const utilCommands = {
+    runRemote: (OS, username, host, interaction) => {
+        const cmd = OS === 'win32' ? "taskkill.exe /F /IM java.exe" : "killall java";
+        runRemote({run:cmd, username, host, onExit:()=>interaction.editReply({content:'Rip java.', ephemeral:true})})
+    },
+    isAlive: (host)=> new Promise((resolve,reject) =>{
+        const path = __dirname + '/../utils/ping.sh'
+        interaction.deferReply({ephemeral:true})
+        const onExit = (code) =>{
+            if (code === 0) resolve (true)
+            reject(false)
+        }
+        runLocal({run:[path,String(host)], onExit})
+    })
+}
 
 
-const runLocal = ({run, onExit = ()=>console.log('exit'), onData = (data)=>console.log(data.toString())}) =>{
+const runLocal = ({run, onExit = (code)=>console.log(`exit ${code}`), onData = (data)=>console.log(data.toString())}) =>{
     try {
         const spawn = require('child_process').spawn;
         
@@ -91,8 +115,8 @@ const runLocal = ({run, onExit = ()=>console.log('exit'), onData = (data)=>conso
             const data = bytes.toString()
             onData(data);
         });
-        proc.on('exit', ()=>{
-            onExit()
+        proc.on('exit', (code)=>{
+            onExit(code)
         })
     } catch (error) {
         console.log(error)
@@ -124,5 +148,6 @@ const runRemote = ({run, username, host, onExit = ()=>console.log('exit')}) =>{
 module.exports = {
     executeCommand: executeCommand,
     getCommandByDiscordMessage: getCommandByDiscordMessage,
-    executeUtilsCommand
+    executeUtilsCommand,
+    utilCommands
 }
