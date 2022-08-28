@@ -45,7 +45,7 @@ function newGameServer(config) {
             return;
         }
         if (!await isAlive(host)){
-            interaction[send]({content:`Murio el server.` , ephemeral: true })
+            interaction[send]({content:`No me puedo conectar con el servidor de ${config.server.remote} intentalo de nuevo mas tarde.` , ephemeral: true })
             return;
         }
         
