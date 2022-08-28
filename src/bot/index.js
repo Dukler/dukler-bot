@@ -88,11 +88,12 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
 const utilCommands = {
     runRemote: (OS, username, host, interaction) => {
         const cmd = OS === 'win32' ? "taskkill.exe /F /IM java.exe" : "killall java";
-        runRemote({run:cmd, username, host, onExit:()=>interaction.editReply({content:'Rip java.', ephemeral:true})})
+        runRemote({run:cmd, username, host, onExit: ()=>interaction.editReply({content:'Rip java.', ephemeral:true})})
     },
     isAlive: (host)=> new Promise((resolve,reject) =>{
         const path = __dirname + '/../utils/ping.sh'
         const onExit = (code) =>{
+            console.log(code)
             if (code === 0) resolve (true)
             reject(false)
         }
