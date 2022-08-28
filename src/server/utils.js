@@ -3,9 +3,15 @@ const isAlive = (host)=> new Promise((resolve,reject) =>{
     const onExit = (code) =>{
         console.log(code)
         if (code === 0) resolve (true)
-        reject(false)
+        resolve (false)
+        
     }
-    runLocal({run:[path,String(host)], onExit})
+    try {
+        runLocal({run:[path,String(host)], onExit})
+    } catch (error) {
+        reject(error)
+    }
+    
 })
 
 const runLocal = ({run = [], onExit = (code)=>console.log(`exit ${code}`), onData = (data)=>console.log(data.toString())}) =>{
