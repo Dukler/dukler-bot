@@ -61,16 +61,40 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
         case 'java':
             interaction.deferReply({ephemeral:true})
             const cmd = OS === 'win32' ? "taskkill.exe /F /IM java.exe" : "killall java";
-            
             runRemote({run:cmd, username, host, onExit:()=>interaction.editReply({content:'Rip java.', ephemeral:true})})
 
             return true;
         case 'ping':
-            runRemote({run:'/home/comanchero-s0/Documents/ping.sh', commandOption, username, host})
+            // runRemote({run:'/home/comanchero-s0/Documents/ping.sh', commandOption, username, host})
+            // const asd = require('../utils/ping.sh')
+            runLocal({run:['../utils/ping.sh',String(host)]})
             
             return true
         default:
             return false;
+    }
+}
+
+
+const runLocal = ({run, onExit = ()=>console.log('exit'), onData = (data)=>console.log(data.toString())}) =>{
+    try {
+        const spawn = require('child_process').spawn;
+        
+        const proc = spawn('sh', run,{detached:false,shell:true})
+
+        proc.stdout.pipe(process.stdout);
+        proc.stderr.pipe(process.stderr);
+        // proc.stdin.write('ping google.com -D' + '\r\n')
+        
+        proc.stdout.on('data', async (bytes) => {
+            const data = bytes.toString()
+            onData(data);
+        });
+        proc.on('exit', ()=>{
+            onExit()
+        })
+    } catch (error) {
+        console.log(error)
     }
 }
 
