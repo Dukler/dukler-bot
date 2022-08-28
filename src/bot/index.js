@@ -88,6 +88,5 @@ const executeUtilsCommand = async (command, commandOption, interaction) => {
 module.exports = {
     executeCommand: executeCommand,
     getCommandByDiscordMessage: getCommandByDiscordMessage,
-    executeUtilsCommand,
-    utilCommands
+    executeUtilsCommand
 }
