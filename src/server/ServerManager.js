@@ -24,7 +24,7 @@ function ServerManager (config = {}) {
         const {spawn} = require('child_process')
         const {host, username} = connections[this.config.server.remote]
         const startPath = `${this.config.start.path}/start.sh`
-        this.server = spawn('ssh', [`${username}@${host}`, startPath],
+        this.server = spawn('ssh', [`${username}@${host}`, 'start.sh'],
         {detached:false, cwd:this.config.start.path})
         this.onServerRunning = onServerRunning;
         this.onServerStarting = onServerStarting;
