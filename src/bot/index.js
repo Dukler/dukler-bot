@@ -52,7 +52,7 @@ const getCommandByDiscordMessage = (interaction) => {
 }
 
 
-const executeUtilsCommand = (command, commandOption, interaction) => {
+const executeUtilsCommand = async (command, commandOption, interaction) => {
     const connections = require('../server/connections.json')
     if(!commandOption) return
     const { OS, host, username } = connections[commandOption]
@@ -65,7 +65,7 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
 
             return true;
         case 'ping':
-            interaction.deferReply({ephemeral:true})
+            await interaction.deferReply({ephemeral:true})
             // const path = __dirname + '/../utils/ping.sh'
             // interaction.deferReply({ephemeral:true})
             // const onExit = (code) =>{
