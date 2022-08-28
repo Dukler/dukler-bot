@@ -36,7 +36,6 @@ function newGameServer(config) {
 
     const start = async ({restarting, interaction}) => {
         const shouldNotify = config.start.notifyDiscord;
-        console.log('asd')
         
         const host = require('./connections.json')[config.server.remote].host;
         const send = 'editReply';
