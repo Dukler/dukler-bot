@@ -34,9 +34,10 @@ function newGameServer(config) {
         })();
     }
 
-    const start = ({restarting, interaction}) => {
+    const start = async ({restarting, interaction}) => {
         const shouldNotify = config.start.notifyDiscord;
         // if(shouldNotify && !restarting) interaction.deferReply({ephemeral:true})
+        console.log('asd')
         
         const host = require('./connections.json')[config.server.remote].host;
         const send = 'editReply';
@@ -45,9 +46,10 @@ function newGameServer(config) {
             interaction[send]({content:`${config.server.name} server already running!` , ephemeral: true })
             return;
         }
-        isAlive(host).catch(()=>{
+        if (!await isAlive(host)){
             interaction[send]({content:`Server muerto, llamalo a ${config.server.remote}` , ephemeral: true })
-        });
+            return;
+        }
         
         
         serverManager.start(

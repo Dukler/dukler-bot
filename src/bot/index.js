@@ -43,7 +43,7 @@ const getCommandByDiscordMessage = (interaction) => {
     // const split = content.split("game:")[1]?.split("command:");
     const game = getParam("game");
     const commandString = getParam("command");
-    if (executeUtilsCommand(commandName, server, interaction)) return false;
+    if (await executeUtilsCommand(commandName, server, interaction)) return false;
     return {
         interaction,
         commandName,
@@ -55,18 +55,16 @@ const getCommandByDiscordMessage = (interaction) => {
 
 const executeUtilsCommand = async (command, commandOption, interaction) => {
     const connections = require('../server/connections.json')
-    if(!commandOption) return
+    if(!commandOption) return false
     const { OS, host, username } = connections[commandOption]
+    await interaction.deferReply({ephemeral:true})
     console.log('asd');
     switch (command) {
         case 'java':
-            interaction.deferReply({ephemeral:true})
             const cmd = OS === 'win32' ? "taskkill.exe /F /IM java.exe" : "killall java";
             runRemote({run:[cmd], username, host, onExit:()=>interaction.editReply({content:'Rip java.', ephemeral:true})})
-
             return true;
         case 'ping':
-            await interaction.deferReply({ephemeral:true})
             isAlive(host)
                 .then(()=>{
                     interaction.editReply({content:'Vivo', ephemeral:true})
