@@ -64,11 +64,12 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
             return true;
         case 'ping':
             isAlive(host)
-                .then(()=>{
-                    interaction.editReply({content:'Vivo', ephemeral:true})
-                })
-                .catch(()=>{
+                .then((isAlive)=>{
+                    if(isAlive)interaction.editReply({content:'Vivo', ephemeral:true})
                     interaction.editReply({content:'Muerto', ephemeral:true})
+                })
+                .catch((err)=>{
+                    console.log(err)
                 })
             
             return true
