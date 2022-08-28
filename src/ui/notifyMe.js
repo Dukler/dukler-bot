@@ -46,7 +46,7 @@ const notifyMeHandler = async (interaction) => {
         }
         checkFlag();
     }else{
-        await interaction.update({content:'Ok.'})
+        await interaction.update({content:'Ok.',components:[]})
     }
     
     
