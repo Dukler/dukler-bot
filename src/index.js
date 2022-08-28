@@ -38,8 +38,9 @@ client.on('interactionCreate', interaction => {
 });
 
 //chat interaction
-client.on('interactionCreate', interaction => {
+client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
+    await interaction.deferReply({ephemeral:true})
     const command = bot.getCommandByDiscordMessage(interaction);
     if(command)bot.executeCommand(command);
 });

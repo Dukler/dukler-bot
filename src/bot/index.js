@@ -16,7 +16,6 @@ async function executeCommand(command) {
         if (server[commandName] != null) {
             try {
                 console.log(`${interaction.user.username} executed ${commandName}`)
-                await interaction.deferReply({ephemeral:true})
                 server[commandName](command);
             } catch (error) {
                 return console.error(error)
@@ -43,7 +42,7 @@ const getCommandByDiscordMessage = (interaction) => {
     // const split = content.split("game:")[1]?.split("command:");
     const game = getParam("game");
     const commandString = getParam("command");
-    if (await executeUtilsCommand(commandName, server, interaction)) return false;
+    if (executeUtilsCommand(commandName, server, interaction)) return false;
     return {
         interaction,
         commandName,
@@ -53,11 +52,10 @@ const getCommandByDiscordMessage = (interaction) => {
 }
 
 
-const executeUtilsCommand = async (command, commandOption, interaction) => {
+const executeUtilsCommand = (command, commandOption, interaction) => {
     const connections = require('../server/connections.json')
     if(!commandOption) return false
     const { OS, host, username } = connections[commandOption]
-    await interaction.deferReply({ephemeral:true})
     console.log('asd');
     switch (command) {
         case 'java':

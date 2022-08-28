@@ -36,7 +36,6 @@ function newGameServer(config) {
 
     const start = async ({restarting, interaction}) => {
         const shouldNotify = config.start.notifyDiscord;
-        // if(shouldNotify && !restarting) interaction.deferReply({ephemeral:true})
         console.log('asd')
         
         const host = require('./connections.json')[config.server.remote].host;
@@ -73,12 +72,10 @@ function newGameServer(config) {
     const stop = ({restarting, isAutoShutdown, interaction}) => {
         const send = 'editReply';
         if(!serverManager.serverRunning){
-            // interaction.deferReply({ephemeral:true})
             interaction[send]({content:`${config.server.name} server is not running!`,ephemeral:true});
             return
         }
         const shouldNotify = config.stop.notifyDiscord && !isAutoShutdown && !restarting;
-        // if(shouldNotify) interaction.deferReply({ephemeral:true})
         serverManager.stop(()=>{
             if (shouldNotify) {
                 interaction[send]({content:`${config.server.name} server has stopped!`,ephemeral:true});
@@ -88,7 +85,6 @@ function newGameServer(config) {
     }
 
     const restart = ({interaction}) => {
-        //interaction.deferReply({ephemeral:true})
         stop({restarting:true,interaction})
         
         function checkFlag() {
