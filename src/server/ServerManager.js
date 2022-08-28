@@ -25,7 +25,7 @@ function ServerManager (config = {}) {
         const {host, username} = connections[this.config.server.remote]
         const startPath = `${this.config.start.path}/start.sh`
         this.server = spawn('ssh', [`${username}@${host}`, startPath],
-        {detached:false,shell:true, cwd:this.config.start.path})
+        {detached:false,shell:true})
         this.onServerRunning = onServerRunning;
         this.onServerStarting = onServerStarting;
 
