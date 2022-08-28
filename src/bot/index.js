@@ -92,7 +92,6 @@ const utilCommands = {
     },
     isAlive: (host)=> new Promise((resolve,reject) =>{
         const path = __dirname + '/../utils/ping.sh'
-        interaction.deferReply({ephemeral:true})
         const onExit = (code) =>{
             if (code === 0) resolve (true)
             reject(false)
