@@ -1,5 +1,5 @@
 const { getGameServer } = require('../server');
-const { isAlive } = require('../server/utils');
+const { isAlive, runRemote } = require('../server/utils');
 
 
 async function executeCommand(command) {
@@ -62,7 +62,7 @@ const executeUtilsCommand = async (command, commandOption, interaction) => {
         case 'java':
             interaction.deferReply({ephemeral:true})
             const cmd = OS === 'win32' ? "taskkill.exe /F /IM java.exe" : "killall java";
-            runRemote({run:cmd, username, host, onExit:()=>interaction.editReply({content:'Rip java.', ephemeral:true})})
+            runRemote({run:[cmd], username, host, onExit:()=>interaction.editReply({content:'Rip java.', ephemeral:true})})
 
             return true;
         case 'ping':
