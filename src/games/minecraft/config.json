@@ -2,7 +2,8 @@
     "debug": true,
     "server": {
         "name": "Minecraft",
-        "remote": "tipao"
+        "remote": "tipao",
+        "pipeInput": true
     },
     "stop": {
         "cmd": "/stop",
@@ -24,7 +25,7 @@
         "Abri el minecraft, agrega el server de tipao, la ip es: dukler.duckdns.org"
     ],
     "autoShutdown": {
-        "timer": 5,
+        "timer": 15,
         "join": "joined the game",
         "left": "left the game"
     }

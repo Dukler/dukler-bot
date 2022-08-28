@@ -28,6 +28,7 @@ function ServerManager (config = {}) {
         this.onServerRunning = onServerRunning;
         this.onServerStarting = onServerStarting;
 
+        if(this.config.server.pipeInput)process.stdin.pipe(this.server.stdin);
         // this.server.stdout.pipe(process.stdout);
         // this.server.stderr.pipe(process.stderr);
 
