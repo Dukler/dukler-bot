@@ -28,8 +28,8 @@ function ServerManager (config = {}) {
         this.onServerRunning = onServerRunning;
         this.onServerStarting = onServerStarting;
 
-        this.server.stdout.pipe(process.stdout);
-        this.server.stderr.pipe(process.stderr);
+        // this.server.stdout.pipe(process.stdout);
+        // this.server.stderr.pipe(process.stderr);
 
         const serverExecution = (data) =>{
             if (this.config.debug) console.log(String(data))
