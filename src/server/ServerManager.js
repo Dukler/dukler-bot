@@ -32,7 +32,7 @@ function ServerManager (config = {}) {
         // this.server.stderr.pipe(process.stderr);
 
         const serverExecution = (data) =>{
-            if (this.config.debug) console.log(String(data))
+            if (this.config.debug) console.log(data)
             if (data.includes(this.config.start.startingMessage)) {
                 this.onServerStarting()
             }
@@ -57,7 +57,7 @@ function ServerManager (config = {}) {
             }
         }
         this.server.stdout.on('data', async (data) => {
-            serverExecution(data)
+            serverExecution(String(data))
             // console.log(data.toString());
         })
         this.server.stderr.on('data', (data) => {
