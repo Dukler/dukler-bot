@@ -56,7 +56,6 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
     const connections = require('../server/connections.json')
     if(!commandOption) return false
     const { OS, host, username } = connections[commandOption]
-    console.log('asd');
     switch (command) {
         case 'java':
             const cmd = OS === 'win32' ? "taskkill.exe /F /IM java.exe" : "killall java";

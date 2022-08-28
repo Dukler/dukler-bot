@@ -3,6 +3,7 @@ const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
 const bot = require('./bot')
 const process = require('process');
 const { helpModalHandler } = require('./ui/helpModal');
+const { notifyMeHandler } = require('./ui/notifyMe');
 
 
 
@@ -35,6 +36,7 @@ client.on('error', console.error);
 client.on('interactionCreate', interaction => {
     if (!interaction.isButton()) return;
     helpModalHandler(interaction)
+    notifyMeHandler(interaction)
 });
 
 //chat interaction

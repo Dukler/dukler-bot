@@ -1,12 +1,12 @@
 const isAlive = (host)=> new Promise((resolve,reject) =>{
-    const path = __dirname + '/../utils/ping.sh'
+    // const ping = require('../utils/ping.sh')
+    const path = __dirname + '\\..\\utils\\ping.sh'
     const onExit = (code) =>{
-        console.log(code)
         if (code === 0) resolve (true)
         resolve (false)
-        
     }
     try {
+        console.log(path);
         runLocal({run:[path,String(host)], onExit})
     } catch (error) {
         reject(error)
@@ -14,14 +14,11 @@ const isAlive = (host)=> new Promise((resolve,reject) =>{
     
 })
 
-const runLocal = ({run = [], onExit = (code)=>console.log(`exit ${code}`), onData = (data)=>console.log(data.toString())}) =>{
+const runLocal = ({run = [], onExit = (code)=>console.log(`exit ${code}`), onData = (data)=>console.log(data)}) =>{
     try {
         const spawn = require('child_process').spawn;
         
         const proc = spawn('sh', run,{detached:false,shell:true})
-
-        proc.stdout.pipe(process.stdout);
-        proc.stderr.pipe(process.stderr);
         // proc.stdin.write('ping google.com -D' + '\r\n')
         
         proc.stdout.on('data', async (bytes) => {

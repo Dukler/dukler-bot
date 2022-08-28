@@ -2,8 +2,6 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('
 
 const customIds = ['prev','next']
 
-const steps = ['hola1', 'hola2']
-
 const helpModalHandler = async (interaction) => {
     if (!customIds.includes(interaction.customId)) return;
     const [game, rest] = interaction.message.embeds[0].title.split(" ");
@@ -44,7 +42,7 @@ const dynamicRow = (index, length) =>{
 }
 
 
-const row = new ActionRowBuilder()
+const HelpButtons = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
                 .setCustomId('prev')
@@ -61,5 +59,5 @@ const row = new ActionRowBuilder()
 module.exports = {
     helpModalHandler,
     HelpEmbed,
-    row
+    HelpButtons
 }

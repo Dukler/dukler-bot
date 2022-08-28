@@ -1,6 +1,7 @@
 
 const { readdirSync } = require('fs');
-const { row, HelpEmbed } = require('../ui/helpModal');
+const { HelpButtons, HelpEmbed } = require('../ui/helpModal');
+const { notifyButtons } = require('../ui/notifyMe');
 const { isAlive } = require('./utils');
 
 
@@ -34,18 +35,24 @@ function newGameServer(config) {
         })();
     }
 
-    const start = async ({restarting, interaction}) => {
+    const start = async ({restarting, interaction, game}) => {
         const shouldNotify = config.start.notifyDiscord;
         
         const host = require('./connections.json')[config.server.remote].host;
         const send = 'editReply';
         
         if(serverManager.serverRunning) {
-            interaction[send]({content:`${config.server.name} server already running!` , ephemeral: true })
+            interaction[send]({
+                content:`${config.server.name} server already running!` , ephemeral: true })
             return;
         }
         if (!await isAlive(host)){
-            interaction[send]({content:`No me puedo conectar con el servidor de ${config.server.remote} intentalo de nuevo mas tarde.` , ephemeral: true })
+            interaction[send]({
+                content:`Hay problemas con la conexion al servidor de ${game} de ${config.server.remote}, si queres te mando un mensaje directo cuando se resuelva.`,
+                components: [notifyButtons],
+                ephemeral: true
+            })
+            
             return;
         }
         
@@ -106,13 +113,12 @@ function newGameServer(config) {
     }
 
     const help = ({game,interaction}) =>{
-        console.log(interaction)
         interaction.editReply({embeds:[HelpEmbed({
             game,
             description:serverManager.config.help[0],
             index:1,
             length:serverManager.config.help.length,
-        })], ephemeral:true, components:[row]})
+        })], ephemeral:true, components:[HelpButtons]})
     }
 
     return { start, stop, restart, write, help}
@@ -134,9 +140,4 @@ module.exports = {
     getGameServer,
     getCurrentGames
 }
-// module.exports = {
-//     newGameServer,
-//     getGameServer
-// }
-
 
