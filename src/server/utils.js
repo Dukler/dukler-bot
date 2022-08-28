@@ -6,7 +6,6 @@ const isAlive = (host)=> new Promise((resolve,reject) =>{
         resolve (false)
     }
     try {
-        console.log(path);
         runLocal({run:[path,String(host)], onExit})
     } catch (error) {
         reject(error)

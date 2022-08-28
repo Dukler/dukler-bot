@@ -41,18 +41,20 @@ function newGameServer(config) {
         const host = require('./connections.json')[config.server.remote].host;
         const send = 'editReply';
         
-        if(serverManager.serverRunning) {
-            interaction[send]({
-                content:`${config.server.name} server already running!` , ephemeral: true })
-            return;
-        }
+        
         if (!await isAlive(host)){
             interaction[send]({
                 content:`Hay problemas con la conexion al servidor de ${game} de ${config.server.remote}, si queres te mando un mensaje directo cuando se resuelva.`,
                 components: [notifyButtons],
                 ephemeral: true
             })
-            
+            serverManager.serverRunning = false;
+            return;
+        }
+
+        if(serverManager.serverRunning) {
+            interaction[send]({
+                content:`${config.server.name} server already running!` , ephemeral: true })
             return;
         }
         
