@@ -55,7 +55,7 @@ function newGameServer(config) {
 
         if(serverManager.serverRunning) {
             interaction[send]({
-                content:`${config.server.name} server already running!` , ephemeral: true })
+                content:`${config.server.name} server already online!` , ephemeral: true })
             return;
         }
         

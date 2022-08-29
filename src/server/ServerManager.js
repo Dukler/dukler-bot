@@ -28,15 +28,17 @@ function ServerManager (config = {}) {
         this.onServerRunning = onServerRunning;
         this.onServerStarting = onServerStarting;
 
-        if(this.config.server.pipeInput)process.stdin.pipe(this.server.stdin);
-        // this.server.stdout.pipe(process.stdout);
-        // this.server.stderr.pipe(process.stderr);
+        if(this.config.server.pipe.input)process.stdin.pipe(this.server.stdin);
+        if(this.config.server.pipe.output){
+            this.server.stdout.pipe(process.stdout);
+            this.server.stderr.pipe(process.stderr);
+        }
         const logPlayers = () =>{
             console.log(`${this.players} players are currently online.`)
         }
 
         const serverExecution = (data) =>{
-            if (this.config.debug) console.log(data)
+            // if (this.config.debug) console.log(data)
             if (data.includes(this.config.start.startingMessage)) {
                 this.players = 0;
                 this.onServerStarting()

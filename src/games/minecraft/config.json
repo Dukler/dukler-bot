@@ -1,9 +1,11 @@
 {
-    "debug": true,
     "server": {
         "name": "Minecraft",
         "remote": "tipao",
-        "pipeInput": true
+        "pipe":{
+            "output":true,
+            "input":true
+        }
     },
     "stop": {
         "cmd": "/stop",
