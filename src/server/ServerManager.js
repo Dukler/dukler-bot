@@ -31,6 +31,9 @@ function ServerManager (config = {}) {
         if(this.config.server.pipeInput)process.stdin.pipe(this.server.stdin);
         // this.server.stdout.pipe(process.stdout);
         // this.server.stderr.pipe(process.stderr);
+        const logPlayers = () =>{
+            console.log(`${this.players} players are currently online.`)
+        }
 
         const serverExecution = (data) =>{
             if (this.config.debug) console.log(data)
@@ -45,9 +48,11 @@ function ServerManager (config = {}) {
             if (this.config.autoShutdown) {
                 if (data.includes(this.config.autoShutdown.join)) {
                     this.players++
+                    logPlayers()
                 }
                 if (data.includes(this.config.autoShutdown.left)) {
                     this.players--
+                    logPlayers()
                 }
             }
 

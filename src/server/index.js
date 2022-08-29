@@ -19,6 +19,7 @@ function newGameServer(config) {
         let counter = 0;
         (async function checkPlayers() {
             if (serverManager.serverRunning) {
+                
                 if (counter < stopTimer) {
                     if (serverManager.players > 0) {
                         counter = 0;
@@ -73,7 +74,6 @@ function newGameServer(config) {
                 if (config.start.notifyDiscord) {
                     interaction[send]({content:`${config.server.name} server has started!`, ephemeral: true });
                 }
-                console.log('shutdown',config.autoShutdown)
                 if (config.autoShutdown) autoShutdown()
             }
         );
