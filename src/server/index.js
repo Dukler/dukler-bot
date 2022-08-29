@@ -73,7 +73,7 @@ function newGameServer(config) {
                 if (config.start.notifyDiscord) {
                     interaction[send]({content:`${config.server.name} server has started!`, ephemeral: true });
                 }
-                console.log(config.autoShutdown)
+                console.log('shutdown',config.autoShutdown)
                 if (config.autoShutdown) autoShutdown()
             }
         );
