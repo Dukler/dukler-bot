@@ -35,6 +35,7 @@ function ServerManager (config = {}) {
         const serverExecution = (data) =>{
             if (this.config.debug) console.log(data)
             if (data.includes(this.config.start.startingMessage)) {
+                this.players = 0;
                 this.onServerStarting()
             }
             if (data.includes(this.config.start.message)) {
