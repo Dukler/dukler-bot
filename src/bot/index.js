@@ -58,7 +58,7 @@ const executeUtilsCommand = (command, commandOption, interaction) => {
     const { OS, host, username } = connections[commandOption]
     switch (command) {
         case 'java':
-            const cmd = OS === 'win32' ? "taskkill.exe /F /IM java.exe" : "killall java";
+            const cmd = OS === 'win32' ? "taskkill.exe /F /IM java.exe" : "killall -9 java";
             runRemote({run:[cmd], username, host, onExit:()=>interaction.editReply({content:'Rip java.', ephemeral:true})})
             return true;
         case 'ping':
