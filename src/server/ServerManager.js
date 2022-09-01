@@ -9,7 +9,7 @@ function ServerManager (config = {}) {
     this.channel= null;
     this.config = config;
     this.onServerStarting = () => {}
-    this.onServerRunning = () => {}
+    this.onServerStarted = () => {}
     this.onServerStopped = () => {}
     this.players = 0;
 
@@ -20,13 +20,11 @@ function ServerManager (config = {}) {
         this.config = config;
     }
     
-    this.start = async (onServerStarting, onServerRunning) => {
+    this.start = async () => {
         const {spawn} = require('child_process')
         const {host, username} = connections[this.config.server.remote]
         const startPath = `${this.config.start.path}/run.sh`
         this.server = spawn('ssh', [`${username}@${host}`, startPath],{detached:false})
-        this.onServerRunning = onServerRunning;
-        this.onServerStarting = onServerStarting;
 
         if(this.config.server.pipe.input)process.stdin.pipe(this.server.stdin);
         if(this.config.server.pipe.output){
@@ -40,12 +38,11 @@ function ServerManager (config = {}) {
         const serverExecution = (data) =>{
             // if (this.config.debug) console.log(data)
             if (data.includes(this.config.start.startingMessage)) {
-                this.players = 0;
                 this.onServerStarting()
             }
             if (data.includes(this.config.start.message)) {
                 this.serverRunning = true;
-                this.onServerRunning()
+                this.onServerStarted()
             }
             if (this.config.autoShutdown) {
                 if (data.includes(this.config.autoShutdown.join)) {
@@ -58,33 +55,36 @@ function ServerManager (config = {}) {
                 }
             }
 
-            if (data.includes(this.config.stop.message)) {
-                if (this.config.stop.notifyDiscord) {
-                    this.serverRunning = false;
-                    this.onServerStopped()
-                }
-            }
+            // if (data.includes(this.config.stop.message)) {
+            //     if (this.config.stop.notifyDiscord) {
+            //         this.serverRunning = false;
+            //         this.onServerStopped()
+            //     }
+            // }
         }
         this.server.stdout.on('data', async (data) => {
             serverExecution(String(data))
             // console.log(data.toString());
         })
-        this.server.stderr.on('data', (data) => {
-            console.log('Error: '+data);
-        })
+        // this.server.stderr.on('data', (data) => {
+        //     console.log('Error: '+data);
+        // })
         this.server.on('close', (code) => {
+            this.onServerStopped(code)
+            this.players = 0;
+            this.serverRunning = false;
             console.log('Process exit code: '+code);
         })
-    }
-
-    this.stop = (onServerStopped)=> {
-        this.onServerStopped = onServerStopped;
     }
 
     this.write = (message) =>{
         if (this.server !== null && this.serverRunning) {
             this.server.stdin.write(message + '\r\n');
         }
+    }
+
+    this.stop = ()=> {
+        this.write(this.config.stop.cmd)
     }
 
     

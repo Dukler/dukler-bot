@@ -9,8 +9,9 @@ async function getGameServer({game}) {
     const server = await (await import(`../games/${game}/index.js`)).default
     return server
 }
+const props = {config:{}, afterServerStopped:()=>{}}
 
-function newGameServer(config) {
+function newGameServer({config, onServerStopped, afterServerStopped}=props) {
     const SM = require('./ServerManager');
     const serverManager = new SM(config);
     const stopTimer = config.autoShutdown.timer;
@@ -58,39 +59,44 @@ function newGameServer(config) {
                 content:`${config.server.name} server already online!` , ephemeral: true })
             return;
         }
-        
-        
-        serverManager.start(
-            ()=>{
-                if (shouldNotify) {
-                    if(restarting){
-                        interaction[send]({content:`${config.server.name} server restarting...`,ephemeral:true })
-                    }else{
-                        interaction[send]({content:'Server starting... ' , ephemeral: true });
-                    }
-                }
-            },
-            ()=>{
-                if (config.start.notifyDiscord) {
-                    interaction[send]({content:`${config.server.name} server has started!`, ephemeral: true });
-                }
-                if (config.autoShutdown) autoShutdown()
+        serverManager.onServerStopped = (code)=>{
+            if (code !== 0){
+                if (shouldNotify) interaction[send]({content:`There was an error starting the ${config.server.name} server`,ephemeral:true});
             }
-        );
+            afterServerStopped(code)
+        }
+        
+        serverManager.onServerStarting = () =>{
+            if (shouldNotify) {
+                if(restarting){
+                    interaction[send]({content:`${config.server.name} server restarting...`,ephemeral:true })
+                }else{
+                    interaction[send]({content:'Server starting... ' , ephemeral: true });
+                }
+            }
+        }
+        serverManager.onServerStarted = () => {
+            if (config.start.notifyDiscord) {
+                interaction[send]({content:`${config.server.name} server has started!`, ephemeral: true });
+            }
+            if (config.autoShutdown) autoShutdown()
+        }
+        
+        serverManager.start();
     }
-    const stop = ({restarting, isAutoShutdown, interaction}) => {
+    const stop = ({restarting, isAutoShutdown, interaction, onServerStopped}) => {
         const send = 'editReply';
         if(!serverManager.serverRunning){
             interaction[send]({content:`${config.server.name} server is not running!`,ephemeral:true});
             return
         }
         const shouldNotify = config.stop.notifyDiscord && !isAutoShutdown && !restarting;
-        serverManager.stop(()=>{
-            if (shouldNotify) {
-                interaction[send]({content:`${config.server.name} server has stopped!`,ephemeral:true});
+        serverManager.onServerStopped = onServerStopped ? (code)=>onServerStopped({code,shouldNotify,interaction}) : (code)=>{
+            if (code === 0){
+                if (shouldNotify) interaction[send]({content:`${config.server.name} server has stopped!`,ephemeral:true});
             }
-        });
-        serverManager.write(config.stop.cmd);
+        }
+        serverManager.stop();
     }
 
     const restart = ({interaction}) => {
