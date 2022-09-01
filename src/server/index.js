@@ -16,7 +16,7 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
     const SM = require('./ServerManager');
     const serverManager = new SM(config);
     const stopTimer = config.autoShutdown.timer;
-    const { OS, host, username } = require('./connections.json')[config.server.remote].host;
+    const { OS, host, username } = require('./connections.json')[config.server.remote];
     const send = 'editReply';
     // const { OS, host, username } = connections[commandOption]
 
