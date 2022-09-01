@@ -63,7 +63,6 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
             if (code !== 0){
                 if (shouldNotify) interaction[send]({content:`There was an error starting the ${config.server.name} server`,ephemeral:true});
             }
-            afterServerStopped(code)
         }
         
         serverManager.onServerStarting = () =>{
