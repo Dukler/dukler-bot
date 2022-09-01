@@ -15,6 +15,21 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
     const SM = require('./ServerManager');
     const serverManager = new SM(config);
     const stopTimer = config.autoShutdown.timer;
+    const { OS, host, username } = require('./connections.json')[config.server.remote].host;
+    // const { OS, host, username } = connections[commandOption]
+
+    const checkAlive = (interaction) =>{
+        if (!await isAlive(host)){
+            interaction[send]({
+                content:`Hay problemas con la conexion al servidor de ${game} de ${config.server.remote}, si queres te mando un mensaje directo cuando se resuelva.`,
+                components: [notifyButtons],
+                ephemeral: true
+            })
+            serverManager.serverRunning = false;
+            return false;
+        }
+        return true
+    }
 
     async function autoShutdown() {
         let counter = 0;
@@ -31,28 +46,20 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
                     checkingPlayers = setTimeout(checkPlayers, 60000);
                 } else {
                     console.log('El servidor se apago');
-                    stop({isAutoShutdown:true});
+                    serverManager.onServerStopped = ()=>{};
+                    serverManager.stop()
                 }
             }
         })();
     }
 
-    const start = async ({restarting, interaction, game}) => {
+    const start = async ({interaction, game}) => {
         const shouldNotify = config.start.notifyDiscord;
         
-        const host = require('./connections.json')[config.server.remote].host;
+        
         const send = 'editReply';
         
-        
-        if (!await isAlive(host)){
-            interaction[send]({
-                content:`Hay problemas con la conexion al servidor de ${game} de ${config.server.remote}, si queres te mando un mensaje directo cuando se resuelva.`,
-                components: [notifyButtons],
-                ephemeral: true
-            })
-            serverManager.serverRunning = false;
-            return;
-        }
+        if(!checkAlive(interaction)) return;
 
         if(serverManager.serverRunning) {
             interaction[send]({
@@ -60,22 +67,15 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
             return;
         }
         serverManager.onServerStopped = (code)=>{
-            if (code !== 0){
-                if (shouldNotify) interaction[send]({content:`There was an error starting the ${config.server.name} server`,ephemeral:true});
-            }
+            if (code !== 0 && shouldNotify)
+                interaction[send]({content:`There was an error starting the ${config.server.name} server`,ephemeral:true});
         }
         
         serverManager.onServerStarting = () =>{
-            if (shouldNotify) {
-                if(restarting){
-                    interaction[send]({content:`${config.server.name} server restarting...`,ephemeral:true })
-                }else{
-                    interaction[send]({content:'Server starting... ' , ephemeral: true });
-                }
-            }
+            if (shouldNotify) interaction[send]({content:'Server starting... ' , ephemeral: true });
         }
         serverManager.onServerStarted = () => {
-            if (config.start.notifyDiscord) {
+            if (shouldNotify) {
                 interaction[send]({content:`${config.server.name} server has started!`, ephemeral: true });
             }
             if (config.autoShutdown) autoShutdown()
@@ -83,13 +83,13 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
         
         serverManager.start();
     }
-    const stop = ({restarting, isAutoShutdown, interaction, onServerStopped}) => {
+    const stop = ({interaction, onServerStopped}) => {
         const send = 'editReply';
         if(!serverManager.serverRunning){
             interaction[send]({content:`${config.server.name} server is not running!`,ephemeral:true});
             return
         }
-        const shouldNotify = config.stop.notifyDiscord && !isAutoShutdown && !restarting;
+        const shouldNotify = config.stop.notifyDiscord;
         serverManager.onServerStopped = onServerStopped ? (code)=>onServerStopped({code,shouldNotify,interaction}) : (code)=>{
             if (code === 0){
                 if (shouldNotify) interaction[send]({content:`${config.server.name} server has stopped!`,ephemeral:true});
@@ -99,16 +99,35 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
     }
 
     const restart = ({interaction}) => {
-        stop({restarting:true,interaction})
-        
-        function checkFlag() {
-            if (serverManager.serverRunning === true) {
-                setTimeout(checkFlag, 100);
-            } else {
-                start({restarting:true, interaction})
-            }
+        const send = 'editReply';
+        if(!checkAlive(interaction)) return;
+        serverManager.onServerStarting = ()=> {
+            interaction[send]({content:`${config.server.name} server restarting...`,ephemeral:true })
         }
-        checkFlag();
+        serverManager.onServerStarted = ()=> {
+            interaction[send]({content:`${config.server.name} server started`,ephemeral:true })
+        }
+        serverManager.onServerStopped = (code) => {
+            const {cmd, onFailCMD} = config?.restart;
+            if(cmd){
+                runRemote({run:[cmd], username, host, onExit:()=>serverManager.start()})
+                return;
+            }else if(onFailCMD && code !== 0){
+                runRemote({run:[cmd], username, host, onExit:()=>serverManager.start()})
+                return;
+            }else serverManager.start()
+        }
+        serverManager.stop();
+        // stop({restarting:true,interaction})
+        
+        // function checkFlag() {
+        //     if (serverManager.serverRunning === true) {
+        //         setTimeout(checkFlag, 100);
+        //     } else {
+        //         start({restarting:true, interaction})
+        //     }
+        // }
+        // checkFlag();
     }
 
     const write = ({commandString, interaction}) =>{

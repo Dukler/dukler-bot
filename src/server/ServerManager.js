@@ -70,9 +70,9 @@ function ServerManager (config = {}) {
         //     console.log('Error: '+data);
         // })
         this.server.on('close', (code) => {
-            this.onServerStopped(code)
             this.players = 0;
             this.serverRunning = false;
+            this.onServerStopped(code)
             console.log('Process exit code: '+code);
         })
     }

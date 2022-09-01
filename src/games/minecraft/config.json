@@ -18,6 +18,9 @@
         "message": "Done (",
         "notifyDiscord": true
     },
+    "restart":{
+        "onFailCMD":"killall -9 java"
+    },
     "help": [
         "Descarga [esto](https://drive.google.com/drive/folders/1e5F8RcfOeCAPQh8mMfS0fNwfZxhbD1ip?usp=sharing).",
         "Abri un explorador de archivos, y en la barra de navegacion borra todo el texto y escribi %appdata% y toca enter",
