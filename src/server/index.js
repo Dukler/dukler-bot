@@ -20,7 +20,7 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
     const send = 'editReply';
     // const { OS, host, username } = connections[commandOption]
 
-    const checkAlive = async (interaction) =>{
+    const checkAlive = async ({interaction, game}) =>{
         if (!await isAlive(host)){
             interaction[send]({
                 content:`Hay problemas con la conexion al servidor de ${game} de ${config.server.remote}, si queres te mando un mensaje directo cuando se resuelva.`,
@@ -61,7 +61,7 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
         
         const send = 'editReply';
         
-        if(!await checkAlive(interaction)) return;
+        if(!await checkAlive({interaction, game})) return;
 
         if(serverManager.serverRunning) {
             interaction[send]({
@@ -100,9 +100,9 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
         serverManager.stop();
     }
 
-    const restart = async ({interaction}) => {
+    const restart = async ({interaction, game}) => {
         const send = 'editReply';
-        if(!await checkAlive(interaction)) return;
+        if(!await checkAlive({interaction, game})) return;
         serverManager.onServerStarting = ()=> {
             interaction[send]({content:`${config.server.name} server restarting...`,ephemeral:true })
         }
