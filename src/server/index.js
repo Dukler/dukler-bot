@@ -99,7 +99,7 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
         serverManager.stop();
     }
 
-    const restart = ({interaction}) => {
+    const restart = async ({interaction}) => {
         const send = 'editReply';
         if(!await checkAlive(interaction)) return;
         serverManager.onServerStarting = ()=> {
