@@ -5,6 +5,7 @@ const { notifyButtons } = require('../ui/notifyMe');
 const { isAlive } = require('./utils');
 
 
+
 async function getGameServer({game}) {
     const server = await (await import(`../games/${game}/index.js`)).default
     return server
@@ -18,7 +19,7 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
     const { OS, host, username } = require('./connections.json')[config.server.remote].host;
     // const { OS, host, username } = connections[commandOption]
 
-    const checkAlive = (interaction) =>{
+    const checkAlive = async (interaction) =>{
         if (!await isAlive(host)){
             interaction[send]({
                 content:`Hay problemas con la conexion al servidor de ${game} de ${config.server.remote}, si queres te mando un mensaje directo cuando se resuelva.`,
@@ -59,7 +60,7 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
         
         const send = 'editReply';
         
-        if(!checkAlive(interaction)) return;
+        if(!await checkAlive(interaction)) return;
 
         if(serverManager.serverRunning) {
             interaction[send]({
@@ -100,7 +101,7 @@ function newGameServer({config, onServerStopped, afterServerStopped}=props) {
 
     const restart = ({interaction}) => {
         const send = 'editReply';
-        if(!checkAlive(interaction)) return;
+        if(!await checkAlive(interaction)) return;
         serverManager.onServerStarting = ()=> {
             interaction[send]({content:`${config.server.name} server restarting...`,ephemeral:true })
         }
